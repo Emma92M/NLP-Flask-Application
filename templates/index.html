@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>NLP App</title>
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #000000;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            background: linear-gradient(to right, violet, indigo, blue, green, yellow, orange, red);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        h2 {
+            border-bottom: 2px solid gray;
+        }
+
+        #textForProcessing {
+            width: 100%;
+            height: 200px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>NLP App</h1>
+
+    <h2>Enter Text for NLP Operations</h2>
+    <textarea id="textForProcessing" placeholder="Enter text for NLP operations"></textarea>
+
+    <h2>Choose an Action</h2>
+    <button onclick="summarize()">Summarize</button>
+    <button onclick="extract()">Extract Features and Entities</button>
+    <button onclick="performLDA()">Perform LDA</button>
+    <button onclick="semanticSimilarity()">Find Semantic Similarity</button>
+
+    <h2>Results</h2>
+    <p id="summary"></p>
+    <p id="entities"></p>
+    <p id="features"></p>
+    <p id="ldaTopics"></p>
+    <p id="semanticGroups"></p>
+
+    <script>
+        async function summarize() {
+            const text = document.getElementById("textForProcessing").value;
+            const response = await fetch('http://127.0.0.1:5000/summarize', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({text: text}),
+            });
+            const data = await response.json();
+            document.getElementById("summary").innerText = "Summary: " + data.summary;
+        }
+
+        async function extract() {
+            const text = document.getElementById("textForProcessing").value;
+            const response = await fetch('http://127.0.0.1:5000/extract', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({text: text}),
+            });
+            const data = await response.json();
+            document.getElementById("entities").innerText = "Entities: " + JSON.stringify(data.entities);
+            document.getElementById("features").innerText = "Features: " + JSON.stringify(data.features);
+        }
+
+        async function performLDA() {
+            const text = document.getElementById("textForProcessing").value;
+            const response = await fetch('http://127.0.0.1:5000/lda', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({text: text}),
+            });
+            const data = await response.json();
+            document.getElementById("ldaTopics").innerText = "LDA Topics: " + JSON.stringify(data.lda_topics);
+        }
+
+        async function semanticSimilarity() {
+            const text = document.getElementById("textForProcessing").value;
+            const response = await fetch('http://127.0.0.1:5000/semantic_similarity', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({text: text}),
+            });
+            const data = await response.json();
+            document.getElementById("semanticGroups").innerText = "Semantic Groups: " + JSON.stringify(data.groups);
+        }
+    </script>
+</body>
+
+</html>
